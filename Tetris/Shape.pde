@@ -21,7 +21,7 @@ class Shape {
 
   public void spawn() {
     //start a block in center of well at top
-    topLeftPos = new int[] {NUM_COLS/2, 0};
+    topLeftPos = new int[] {NUM_COLS/2 - 1, 0};
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
         grid[topLeftPos[0] + i][topLeftPos[1] + j] = shapeLayout[i][j];
@@ -48,28 +48,7 @@ class Shape {
   public void moveLeft() {
     boolean canMove = true;
     
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        if (shapeLayout[i][j] > 0 && grid[topLeftPos[0] + i - 1][topLeftPos[1] + j] > 0) {
-          canMove = false;
-          break;
-        }
-      }
-    }
     
-    if (canMove){
-      for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-          grid[topLeftPos[0] + i][topLeftPos[1] + j] = 0;
-        }
-      }
-      for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-          grid[topLeftPos[0] + i - 1][topLeftPos[1] + j] = shapeLayout[i][j];
-          topLeftPos[0]--;
-        }
-      }
-    }
     
   }
 
@@ -80,30 +59,39 @@ class Shape {
 
   public void moveDown() {
     boolean canMove = true;
-    
-    //for (int i = 0; i < 3; i++) {
-    //  for (int j = 0; j < 3; j++) {
-    //    if (shapeLayout[i][j] > 0 && grid[topLeftPos[0] + i][topLeftPos[1] + j + 1] > 0) {
-    //      canMove = false;
-    //      break;
-    //    }
-    //  }
-    //}
+
+    for (int i = 0; i < 3; i++) {
+      println("ShapeLayout " + i + 2 + ": " + shapeLayout[i][2]);
+      println("Grid " + (topLeftPos[0]) + (topLeftPos[1] + 3) + ": " + grid[topLeftPos[0]][topLeftPos[1] + 3]);
+      println("TopLeftPos: " + topLeftPos[0] + topLeftPos[1]);
+      if (shapeLayout[i][2] > 0 && grid[topLeftPos[0] + i][topLeftPos[1] + 3] > 0) {
+          canMove = false;
+      }
+    }
     
     if (canMove){
       for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-          grid[topLeftPos[0] + i][topLeftPos[1] + j] = 0;
-        }
+        if (topLeftPos[1] > 0)
+          grid[topLeftPos[0] + i][topLeftPos[1] - 1] = 0;
       }
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-          println(topLeftPos[0]);
-          println(topLeftPos[1]);
-          grid[topLeftPos[0]][topLeftPos[1]] = shapeLayout[i][j];
-          topLeftPos[1]++;
+          println(topLeftPos[0] + i);
+          println(topLeftPos[1] + j);
+          grid[topLeftPos[0] + i][topLeftPos[1] + j] = shapeLayout[i][j];
         }
       }
+      topLeftPos[1]++;
+    }
+    else {
+      //clearRows(); //should this move to tetris.pde?
+      for (int i = 0; i < NUM_COLS; i++) {
+        for (int j = 0; j < NUM_ROWS; j++) {
+          print(grid[i][j] + " ");
+        }
+        println();
+      }
+      newShapeNeeded = true; //maybe this
     }
   //check if moving down will cause collision
   //if so, check for completed rows and spawn next shape

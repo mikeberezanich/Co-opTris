@@ -19,6 +19,13 @@ void setup() {
   
   currentShape = new Shape('L', 2);
   currentShape.spawn();
+  
+  for (int i = 0; i < NUM_COLS; i++) {
+    for (int j = 0; j < NUM_ROWS; j++) {
+      print(grid[i][j] + " ");
+    }
+    println();
+  }
 }
 
 void draw() {
@@ -50,8 +57,10 @@ void draw() {
       timer = 0;
       currentShape.moveDown();
     }
-    
   }
+  
+  timer++;
+  
 }
 
 void handleInput() {
