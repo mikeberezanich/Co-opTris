@@ -105,9 +105,17 @@ class Shape {
       topLeftPos[1]++;
     }
     else {
+      pinToWell();
+      //for debugging
+  for (int i = 0; i < NUM_COLS; i++) {
+    for (int j = 0; j < NUM_ROWS; j++) {
+      print(grid[i][j] + " ");
+    }
+    println();
+  }
       score += clearRows();
       newShapeNeeded = true;
-      pinToWell(); 
+      
       
       if (isGameOver())
         endGame();

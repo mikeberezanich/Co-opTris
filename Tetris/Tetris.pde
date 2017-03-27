@@ -3,6 +3,7 @@ int BLOCK_SIZE = 40, TOP_OFFSET = 80;
 int[][] grid = new int[NUM_COLS][NUM_ROWS];
 int timer = 0, score = 0;
 boolean newShapeNeeded = false;
+boolean gamePaused = false;
 Shape currShape;
 
 void setup() {
@@ -20,7 +21,7 @@ void setup() {
   
   spawnRandomShape();
   
-  //for debugging
+  ////for debugging
   //for (int i = 0; i < NUM_COLS; i++) {
   //  for (int j = 0; j < NUM_ROWS; j++) {
   //    print(grid[i][j] + " ");
@@ -86,6 +87,22 @@ void keyReleased() {
                break;
     case RIGHT: currShape.moveRight();
                 break;
+    case ENTER:
+    case RETURN: if (gamePaused){
+                   gamePaused = false;
+                   loop();
+                 }
+                   
+                 else {
+                   gamePaused = true;
+                   noLoop();
+                 }
+                 break;
+  }
+}
+
+void keyPressed() {
+  switch (keyCode) {
     case DOWN: currShape.moveDown();
                break;
   }
@@ -99,18 +116,25 @@ int clearRows() {
   boolean isRowClear = true;
   int rowsCleared = 0;
   
-  for (int i = 1; i < NUM_COLS - 1; i++) {
-    for (int j = 0; j < NUM_ROWS - 1; j++) {
-      if (grid[i][j] == 0){
+  int i, j;
+  for (i = 0; i < NUM_ROWS - 1; i++) {
+    for (j = 0; j < NUM_COLS - 1; j++) {
+      if (grid[j][i] == 0){
         isRowClear = false;
       }
     }
     if (isRowClear) {
       rowsCleared += 1;
-      //delete current row
-      //shift rows down
+      for (j = 1; j < NUM_COLS - 1; j++) {
+        grid[j][i] = 0;
+      }
+      for (int k = i; k > 0; k--) {
+        for (j = 1; j < NUM_COLS - 1; j++) {
+          grid[j][k] = grid[j][k - 1];
+        }
+      }
     }
-    isRowClear = true;
+    isRowClear = true; 
   }
   
   return rowsCleared * 100;
