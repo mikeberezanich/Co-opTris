@@ -4,7 +4,9 @@ int[][] grid = new int[NUM_COLS][NUM_ROWS];
 int timer = 0, score = 0;
 boolean newShapeNeeded = false;
 boolean gamePaused = false;
+boolean gameStarted = false;
 Shape currShape;
+PImage titleScreen; 
 
 void setup() {
   size(480, 880);
@@ -16,7 +18,9 @@ void setup() {
   }
   for (int i = 0; i < NUM_COLS; i++) {
     grid[i][NUM_ROWS - 1] = 1;
-  }
+  }     
+  
+  titleScreen = loadImage("TitleScreen.png"); 
   
   
   spawnRandomShape();
@@ -32,7 +36,34 @@ void setup() {
 
 void draw() {
   
-  //draws grid to screen
+  if (gameStarted) {
+    drawWell();
+    drawCurrShape();
+    
+    pushMatrix();
+    fill(255);
+    textSize(18);
+    text("Score: " + score, 50, 25);
+    popMatrix();
+    
+    if (newShapeNeeded) {
+      spawnRandomShape();
+      newShapeNeeded = false;
+    } else {
+      if (timer > 30) {
+        timer = 0;
+        currShape.moveDown();
+      }
+    }
+    
+    timer++;
+  }
+  else {
+    showStartMenu();
+  }
+}
+
+void drawWell() {
   for (int i = 0; i < NUM_COLS; i++) {
     for (int j = 0; j < NUM_ROWS; j++) {
       switch(grid[i][j]) {
@@ -40,45 +71,55 @@ void draw() {
                 break;
         case 1: fill(127);
                 break;
-        case 2: fill(91, 231, 237);
+        case 2: fill(23, 189, 205);
                 break;
+        case 3: fill(71, 205, 22);
+                break; 
+        case 4: fill(205, 38, 22);
+                break; 
+        case 5: fill(22, 47, 205);
+                break;
+        case 6: fill(123, 22, 205);
+                break; 
+        case 7: fill(242, 169, 43);
+                break;        
+        case 8: fill(242, 255, 12);
+                break;       
       }
       int startX = i * BLOCK_SIZE;
       int startY = j * BLOCK_SIZE;// + TOP_OFFSET;
       rect(startX, startY, BLOCK_SIZE, BLOCK_SIZE);
     }
   }
+}
+
+void drawCurrShape() {
+  switch(currShape.shapeColor) {
+        case 2: fill(23, 189, 205);
+                break;
+        case 3: fill(71, 205, 22);
+                break; 
+        case 4: fill(205, 38, 22);
+                break; 
+        case 5: fill(22, 47, 205);
+                break;
+        case 6: fill(123, 22, 205);
+                break; 
+        case 7: fill(242, 169, 43);
+                break;        
+        case 8: fill(242, 255, 12);
+                break;       
+      }
   
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
+  for (int i = 0; i < currShape.shapeLayout.length; i++) {
+    for (int j = 0; j < currShape.shapeLayout[0].length; j++) {
       if (currShape.shapeLayout[i][j] > 0) {
         int startX = (currShape.topLeftPos[0] + i) * BLOCK_SIZE;
         int startY = (currShape.topLeftPos[1] + j) * BLOCK_SIZE;
-        fill(91, 231, 237);
         rect(startX, startY, BLOCK_SIZE, BLOCK_SIZE);
       }
     }
   }
-  
-  pushMatrix();
-  fill(255);
-  textSize(18);
-  text("Score: " + score, 50, 25);
-  popMatrix();
-  
-  if (newShapeNeeded) {
-    spawnRandomShape();
-    newShapeNeeded = false;
-  }
-  else {
-    if (timer > 30) {
-      timer = 0;
-      currShape.moveDown();
-    }
-  }
-  
-  timer++;
-  
 }
 
 void keyReleased() {
@@ -92,7 +133,6 @@ void keyReleased() {
                    gamePaused = false;
                    loop();
                  }
-                   
                  else {
                    gamePaused = true;
                    noLoop();
@@ -108,13 +148,14 @@ void keyPressed() {
   }
 }
 
-void mouseReleased() {
+void mouseClicked() {
   currShape.rotateLeft();
 }
 
 int clearRows() {
   boolean isRowClear = true;
   int rowsCleared = 0;
+  int points = 0;
   
   int i, j;
   for (i = 0; i < NUM_ROWS - 1; i++) {
@@ -137,15 +178,26 @@ int clearRows() {
     isRowClear = true; 
   }
   
-  return rowsCleared * 100;
+  switch (rowsCleared) {
+    case 1: points = 100;
+            break;
+    case 2: points = 250;
+            break;
+    case 3: points = 500;
+            break;
+    case 4: points = 800;
+            break;
+  }
+  
+  return points;
 }
 
 void spawnRandomShape() {
   int randLetter, randColor;
   char letter;
   
-  randLetter = int(random(5));
-  randColor = int(random(8));
+  randLetter = int(random(7));
+  randColor = int(random(7));
   
   if (randLetter == 0)
     letter = 'L';
@@ -157,11 +209,13 @@ void spawnRandomShape() {
     letter = 'T';
   else if (randLetter == 4)
     letter = 'S';
-  else
-    letter = 'J'; //add I later
+  else if (randLetter == 5)
+    letter = 'J'; 
+  else 
+    letter = 'I';
   
   
-  currShape = new Shape(letter, 2);
+  currShape = new Shape(letter, randColor + 2);
   currShape.spawn();
 }
 
@@ -171,6 +225,40 @@ boolean isGameOver() {
       return true;
   }
   return false;
+}
+
+void showStartMenu() {
+  image(titleScreen, 0, 0, width, height);
+    fill(255);
+    textSize(18);
+    text("For music I recommend playing Tina Guo's Tetris", 10, 820);
+    text("theme from \"Game On!\" on repeat but I did not", 10, 840);
+    text("include in case of copyright issues", 10, 860);
+    
+    rectMode(CENTER);
+    fill(91, 231, 237);
+    stroke(255);
+    strokeWeight(3);
+    rect(width/2, 700, 40, 40);
+    rect(width/2 - 40, 700, 40, 40);
+    rect(width/2 - 80, 700, 40, 40);
+    rect(width/2 + 40, 700, 40, 40);
+    rect(width/2 + 80, 700, 40, 40);
+    textSize(36);
+    fill(255);
+    text("S", width/2 - 90, 715);
+    text("T", width/2 - 50, 715);
+    text("A", width/2 - 10, 715);
+    text("R", width/2 + 30, 715);
+    text("T", width/2 + 70, 715);
+    
+    //setting values for rest of game since pushMatrix and popMatrix don't seem to be doing what I want
+    rectMode(CORNER);
+    stroke(0);
+    strokeWeight(2);
+    
+    if (mousePressed && (mouseX >= 140 && mouseX <= 340) && (mouseY >= 680 && mouseY <= 720))
+      gameStarted = true;
 }
 
 void endGame() {

@@ -1,41 +1,60 @@
 class Shape {
-  int[][] shapeLayout = new int[3][3];
-  int[] topLeftPos;
+  protected int[][] shapeLayout;
+  protected int[] topLeftPos;
+  protected int state;
+  protected int shapeColor;
 
   public Shape(char letter, int c) {
+    state = 0;
+    shapeColor = c;
     switch (letter) {
-      case 'L': shapeLayout[0][0] = c;
+      case 'L': shapeLayout = new int[3][3];
+                shapeLayout[0][0] = c;
                 shapeLayout[0][1] = c;
                 shapeLayout[0][2] = c;
                 shapeLayout[1][2] = c;
                 break;
-      case 'J': shapeLayout[1][0] = c;
+      case 'J': shapeLayout = new int[3][3];
+                shapeLayout[1][0] = c;
                 shapeLayout[1][1] = c;
                 shapeLayout[1][2] = c;
                 shapeLayout[0][2] = c;
                 break;
-      case 'S': shapeLayout[0][0] = c;
+      case 'S': shapeLayout = new int[3][3];
+                shapeLayout[0][0] = c;
                 shapeLayout[0][1] = c;
                 shapeLayout[1][1] = c;
                 shapeLayout[1][2] = c;
                 break;
-      case 'Z': shapeLayout[1][0] = c;
+      case 'Z': shapeLayout = new int[3][3];
+                shapeLayout[1][0] = c;
                 shapeLayout[1][1] = c;
                 shapeLayout[0][1] = c;
                 shapeLayout[0][2] = c;
                 break;
-      case 'O': shapeLayout[0][1] = c;
-                shapeLayout[0][2] = c;
+      case 'O': shapeLayout = new int[2][2];
+                shapeLayout[0][0] = c;
+                shapeLayout[0][1] = c;
+                shapeLayout[1][0] = c;
                 shapeLayout[1][1] = c;
-                shapeLayout[1][2] = c;
                 break;
-      case 'T': shapeLayout[1][1] = c;
+      case 'T': shapeLayout = new int[3][3]; 
+                shapeLayout[1][1] = c;
                 shapeLayout[0][2] = c;
                 shapeLayout[1][2] = c;
                 shapeLayout[2][2] = c;
                 break;
-      case 'I':  break;
+      case 'I': shapeLayout = new int[4][4];
+                shapeLayout[0][0] = c;
+                shapeLayout[1][0] = c;
+                shapeLayout[2][0] = c;
+                shapeLayout[3][0] = c;
+                break;
     }
+  }
+  
+  public void resetShape() {
+    
   }
 
   public void spawn() {
@@ -43,16 +62,16 @@ class Shape {
   }
 
   public void rotateLeft() {
-    int [][] rot = new int[3][3];
+    int [][] rot = new int[shapeLayout.length][shapeLayout.length];
 
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < shapeLayout.length; i++) {
+      for (int j = 0; j < shapeLayout.length; j++) {
         rot[j][shapeLayout.length - 1 - i] = shapeLayout[i][j];
       }
     }
 
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < shapeLayout.length; i++) {
+      for (int j = 0; j < shapeLayout.length; j++) {
         shapeLayout[i][j] = rot[i][j];
       }
     }
@@ -61,8 +80,8 @@ class Shape {
   public void moveLeft() {
     boolean canMove = true;
     
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < shapeLayout.length; i++) {
+      for (int j = 0; j < shapeLayout.length; j++) {
         if (shapeLayout[i][j] > 0 && grid[topLeftPos[0] + i - 1][topLeftPos[1] + j] > 0) {
           canMove = false;
         }
@@ -77,8 +96,8 @@ class Shape {
   public void moveRight() {
     boolean canMove = true;
     
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < shapeLayout.length; i++) {
+      for (int j = 0; j < shapeLayout.length; j++) {
         if (shapeLayout[i][j] > 0 && grid[topLeftPos[0] + i + 1][topLeftPos[1] + j] > 0) {
           canMove = false;
         }
@@ -93,8 +112,8 @@ class Shape {
   public void moveDown() {
     boolean canMove = true;
     
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < shapeLayout.length; i++) {
+      for (int j = 0; j < shapeLayout.length; j++) {
         if (shapeLayout[i][j] > 0 && grid[topLeftPos[0] + i][topLeftPos[1] + j + 1] > 0) {
           canMove = false;
         }
@@ -106,13 +125,6 @@ class Shape {
     }
     else {
       pinToWell();
-      //for debugging
-  for (int i = 0; i < NUM_COLS; i++) {
-    for (int j = 0; j < NUM_ROWS; j++) {
-      print(grid[i][j] + " ");
-    }
-    println();
-  }
       score += clearRows();
       newShapeNeeded = true;
       
@@ -128,8 +140,8 @@ class Shape {
   }
   
   public void pinToWell() {
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < shapeLayout.length; i++) {
+      for (int j = 0; j < shapeLayout.length; j++) {
         if (shapeLayout[i][j] > 0) {
           grid[topLeftPos[0] + i][topLeftPos[1] + j] = shapeLayout[i][j];
         }
