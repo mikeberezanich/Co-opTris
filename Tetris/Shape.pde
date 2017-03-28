@@ -126,11 +126,9 @@ class Shape {
     else {
       pinToWell();
       score += clearRows();
+      gameOver = isGameOver();
       newShapeNeeded = true;
       
-      
-      if (isGameOver())
-        endGame();
     }
   }
 

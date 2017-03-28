@@ -5,6 +5,7 @@ int timer = 0, score = 0;
 boolean newShapeNeeded = false;
 boolean gamePaused = false;
 boolean gameStarted = false;
+boolean gameOver = false;
 Shape currShape;
 PImage titleScreen; 
 
@@ -36,7 +37,10 @@ void setup() {
 
 void draw() {
   
-  if (gameStarted) {
+  if (gameOver) {
+    endGame();
+  }
+  else if (gameStarted) {
     drawWell();
     drawCurrShape();
     
@@ -229,46 +233,96 @@ boolean isGameOver() {
 
 void showStartMenu() {
   image(titleScreen, 0, 0, width, height);
-    fill(255);
-    textSize(18);
-    text("For music I recommend playing Tina Guo's Tetris", 10, 820);
-    text("theme from \"Game On!\" on repeat but I did not", 10, 840);
-    text("include in case of copyright issues", 10, 860);
-    
-    rectMode(CENTER);
-    fill(91, 231, 237);
-    stroke(255);
-    strokeWeight(3);
-    rect(width/2, 700, 40, 40);
-    rect(width/2 - 40, 700, 40, 40);
-    rect(width/2 - 80, 700, 40, 40);
-    rect(width/2 + 40, 700, 40, 40);
-    rect(width/2 + 80, 700, 40, 40);
-    textSize(36);
-    fill(255);
-    text("S", width/2 - 90, 715);
-    text("T", width/2 - 50, 715);
-    text("A", width/2 - 10, 715);
-    text("R", width/2 + 30, 715);
-    text("T", width/2 + 70, 715);
-    
-    //setting values for rest of game since pushMatrix and popMatrix don't seem to be doing what I want
-    rectMode(CORNER);
-    stroke(0);
-    strokeWeight(2);
-    
-    if (mousePressed && (mouseX >= 140 && mouseX <= 340) && (mouseY >= 680 && mouseY <= 720))
-      gameStarted = true;
+  fill(255);
+  textSize(18);
+  text("Controls: ", 10, 20);
+  text("Player 1: Arrow keys to move block", 30, 40);
+  text("Player 2: Mouse click to rotate", 30, 60);
+  text("Be careful not to rotate too close to border!", 30, 80);
+  text("For music I recommend playing Tina Guo's Tetris", 10, 820);
+  text("theme from \"Game On!\" on repeat but I did not", 10, 840);
+  text("include in case of copyright issues", 10, 860);
+  
+  rectMode(CENTER);
+  fill(91, 231, 237);
+  stroke(255);
+  strokeWeight(3);
+  rect(width/2, 700, 40, 40);
+  rect(width/2 - 40, 700, 40, 40);
+  rect(width/2 - 80, 700, 40, 40);
+  rect(width/2 + 40, 700, 40, 40);
+  rect(width/2 + 80, 700, 40, 40);
+  textSize(36);
+  fill(255);
+  text("S", width/2 - 90, 715);
+  text("T", width/2 - 50, 715);
+  text("A", width/2 - 10, 715);
+  text("R", width/2 + 30, 715);
+  text("T", width/2 + 70, 715);
+  
+  //setting values for rest of game since pushMatrix and popMatrix don't seem to be doing what I want
+  rectMode(CORNER);
+  stroke(0);
+  strokeWeight(2);
+  
+  if (mousePressed && (mouseX >= 140 && mouseX <= 340) && (mouseY >= 680 && mouseY <= 720))
+    gameStarted = true;
 }
 
 void endGame() {
   println("Game over");
   fill(255);
-  rect(0, 0, width, height);
-  fill(0);
+  background(0);
+  fill(255);
   textSize(32);
   textAlign(CENTER);
-  text("GAME OVER", width/2, height/2 - 40);
-  text("Final Score: " + score, width/2, height/2 + 40);
-  noLoop();
+  text("GAME OVER", width/2, height/2 - 100);
+  text("Final Score: " + score, width/2, height/2 - 50);
+  //noLoop();
+  
+  rectMode(CENTER);
+  fill(91, 231, 237);
+  stroke(255);
+  strokeWeight(3);
+  rect(width/2, 485, 40, 40);
+  rect(width/2 - 40, 485, 40, 40);
+  rect(width/2 - 80, 485, 40, 40);
+  rect(width/2 - 120, 485, 40, 40);
+  rect(width/2 + 40, 485, 40, 40);
+  rect(width/2 + 80, 485, 40, 40);
+  rect(width/2 + 120, 485, 40, 40);
+  textSize(36);
+  fill(255);
+  text("R", width/2 - 120, 500);
+  text("E", width/2 - 80, 500);
+  text("S", width/2 - 40, 500);
+  text("T", width/2, 500);
+  text("A", width/2 + 40, 500);
+  text("R", width/2 + 80, 500);
+  text("T", width/2 + 120, 500);
+  
+  //setting values for rest of game since pushMatrix and popMatrix don't seem to be doing what I want
+  rectMode(CORNER);
+  textAlign(LEFT);
+  stroke(0);
+  strokeWeight(2);
+  
+  if (mousePressed && (mouseX >= 100 && mouseX <= 380) && (mouseY >= 460 && mouseY <= 500)){
+    for (int i = 0; i < NUM_ROWS; i++) {
+      for (int j = 0; j < NUM_COLS; j++) {
+        grid[j][i] = 0;
+      }
+    }
+    for (int i = 0; i < NUM_ROWS; i++) {
+      grid[0][i] = 1;
+      grid[NUM_COLS - 1][i] = 1;
+    }
+    for (int i = 0; i < NUM_COLS; i++) {
+      grid[i][NUM_ROWS - 1] = 1;
+    }     
+    score = 0;
+    gameOver = false;
+  }
+  else 
+    println(mouseX + " " + mouseY);
 }
