@@ -198,28 +198,35 @@ int clearRows() {
 
 void spawnRandomShape() {
   int randLetter, randColor;
-  char letter;
+  //char letter;
   
-  randLetter = int(random(7));
+  //randLetter = int(random(7));
   randColor = int(random(7));
   
+  randLetter = int(random(2));
+  
   if (randLetter == 0)
-    letter = 'L';
-  else if (randLetter == 1)
-    letter = 'Z';
-  else if (randLetter == 2)
-    letter = 'O';
-  else if (randLetter == 3)
-    letter = 'T';
-  else if (randLetter == 4)
-    letter = 'S';
-  else if (randLetter == 5)
-    letter = 'J'; 
-  else 
-    letter = 'I';
+    currShape = new IShape(randColor + 2);
+  else
+    currShape = new LShape(randColor + 2);
+  
+  //if (randLetter == 0)
+  //  letter = 'L';
+  //else if (randLetter == 1)
+  //  letter = 'Z';
+  //else if (randLetter == 2)
+  //  letter = 'O';
+  //else if (randLetter == 3)
+  //  letter = 'T';
+  //else if (randLetter == 4)
+  //  letter = 'S';
+  //else if (randLetter == 5)
+  //  letter = 'J'; 
+  //else 
+  //  letter = 'I';
   
   
-  currShape = new Shape(letter, randColor + 2);
+  //currShape = new Shape(letter, randColor + 2);
   currShape.spawn();
 }
 
@@ -260,7 +267,7 @@ void showStartMenu() {
   text("R", width/2 + 30, 715);
   text("T", width/2 + 70, 715);
   
-  //setting values for rest of game since pushMatrix and popMatrix don't seem to be doing what I want
+  
   rectMode(CORNER);
   stroke(0);
   strokeWeight(2);
@@ -301,9 +308,8 @@ void endGame() {
   text("R", width/2 + 80, 500);
   text("T", width/2 + 120, 500);
   
-  //setting values for rest of game since pushMatrix and popMatrix don't seem to be doing what I want
   rectMode(CORNER);
-  textAlign(LEFT);
+  textAlign(LEFT); //<>//
   stroke(0);
   strokeWeight(2);
   

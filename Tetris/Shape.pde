@@ -1,56 +1,58 @@
 class Shape {
   protected int[][] shapeLayout;
+  protected int[][] prevLayout; //for holding the last layout, used for rotation collision checks
   protected int[] topLeftPos;
   protected int state;
+  protected int maxState;
   protected int shapeColor;
 
-  public Shape(char letter, int c) {
+  public Shape(int c) {
     state = 0;
     shapeColor = c;
-    switch (letter) {
-      case 'L': shapeLayout = new int[3][3];
-                shapeLayout[0][0] = c;
-                shapeLayout[0][1] = c;
-                shapeLayout[0][2] = c;
-                shapeLayout[1][2] = c;
-                break;
-      case 'J': shapeLayout = new int[3][3];
-                shapeLayout[1][0] = c;
-                shapeLayout[1][1] = c;
-                shapeLayout[1][2] = c;
-                shapeLayout[0][2] = c;
-                break;
-      case 'S': shapeLayout = new int[3][3];
-                shapeLayout[0][0] = c;
-                shapeLayout[0][1] = c;
-                shapeLayout[1][1] = c;
-                shapeLayout[1][2] = c;
-                break;
-      case 'Z': shapeLayout = new int[3][3];
-                shapeLayout[1][0] = c;
-                shapeLayout[1][1] = c;
-                shapeLayout[0][1] = c;
-                shapeLayout[0][2] = c;
-                break;
-      case 'O': shapeLayout = new int[2][2];
-                shapeLayout[0][0] = c;
-                shapeLayout[0][1] = c;
-                shapeLayout[1][0] = c;
-                shapeLayout[1][1] = c;
-                break;
-      case 'T': shapeLayout = new int[3][3]; 
-                shapeLayout[1][1] = c;
-                shapeLayout[0][2] = c;
-                shapeLayout[1][2] = c;
-                shapeLayout[2][2] = c;
-                break;
-      case 'I': shapeLayout = new int[4][4];
-                shapeLayout[0][0] = c;
-                shapeLayout[1][0] = c;
-                shapeLayout[2][0] = c;
-                shapeLayout[3][0] = c;
-                break;
-    }
+    //switch (letter) {
+    //  case 'L': shapeLayout = new int[3][3];
+    //            shapeLayout[0][0] = c;
+    //            shapeLayout[0][1] = c;
+    //            shapeLayout[0][2] = c;
+    //            shapeLayout[1][2] = c;
+    //            break;
+    //  case 'J': shapeLayout = new int[3][3];
+    //            shapeLayout[1][0] = c;
+    //            shapeLayout[1][1] = c;
+    //            shapeLayout[1][2] = c;
+    //            shapeLayout[0][2] = c;
+    //            break;
+    //  case 'S': shapeLayout = new int[3][3];
+    //            shapeLayout[0][0] = c;
+    //            shapeLayout[0][1] = c;
+    //            shapeLayout[1][1] = c;
+    //            shapeLayout[1][2] = c;
+    //            break;
+    //  case 'Z': shapeLayout = new int[3][3];
+    //            shapeLayout[1][0] = c;
+    //            shapeLayout[1][1] = c;
+    //            shapeLayout[0][1] = c;
+    //            shapeLayout[0][2] = c;
+    //            break;
+    //  case 'O': shapeLayout = new int[2][2];
+    //            shapeLayout[0][0] = c;
+    //            shapeLayout[0][1] = c;
+    //            shapeLayout[1][0] = c;
+    //            shapeLayout[1][1] = c;
+    //            break;
+    //  case 'T': shapeLayout = new int[3][3]; 
+    //            shapeLayout[1][1] = c;
+    //            shapeLayout[0][2] = c;
+    //            shapeLayout[1][2] = c;
+    //            shapeLayout[2][2] = c;
+    //            break;
+    //  case 'I': shapeLayout = new int[4][4];
+    //            shapeLayout[0][0] = c;
+    //            shapeLayout[1][0] = c;
+    //            shapeLayout[2][0] = c;
+    //            shapeLayout[3][0] = c;
+    //            break;
+    //}
   }
   
   public void resetShape() {
@@ -62,18 +64,42 @@ class Shape {
   }
 
   public void rotateLeft() {
-    int [][] rot = new int[shapeLayout.length][shapeLayout.length];
+    //int [][] rot = new int[shapeLayout.length][shapeLayout.length];
 
+    //for (int i = 0; i < shapeLayout.length; i++) {
+    //  for (int j = 0; j < shapeLayout.length; j++) {
+    //    rot[j][shapeLayout.length - 1 - i] = shapeLayout[i][j];
+    //  }
+    //}
+
+    //for (int i = 0; i < shapeLayout.length; i++) {
+    //  for (int j = 0; j < shapeLayout.length; j++) {
+    //    shapeLayout[i][j] = rot[i][j];
+    //  }
+    //}
+  }
+
+  public void checkRotation() {
+    boolean canRotate = true;
+    
     for (int i = 0; i < shapeLayout.length; i++) {
       for (int j = 0; j < shapeLayout.length; j++) {
-        rot[j][shapeLayout.length - 1 - i] = shapeLayout[i][j];
+        if (shapeLayout[i][j] > 0 && grid[topLeftPos[0] + i][topLeftPos[1] + j] > 0) {
+          canRotate = false;
+        }
       }
     }
-
-    for (int i = 0; i < shapeLayout.length; i++) {
-      for (int j = 0; j < shapeLayout.length; j++) {
-        shapeLayout[i][j] = rot[i][j];
-      }
+    
+    println(canRotate);
+    
+    if (canRotate) {
+      state++;
+      
+      if (state > maxState)     
+        state = 0;
+    }
+    else {
+      shapeLayout = prevLayout;
     }
   }
 
