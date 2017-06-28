@@ -23,16 +23,7 @@ void setup() {
   
   titleScreen = loadImage("TitleScreen.png"); 
   
-  
   spawnRandomShape();
-  
-  ////for debugging
-  //for (int i = 0; i < NUM_COLS; i++) {
-  //  for (int j = 0; j < NUM_ROWS; j++) {
-  //    print(grid[i][j] + " ");
-  //  }
-  //  println();
-  //}
 }
 
 void draw() {
@@ -126,8 +117,10 @@ void drawCurrShape() {
   }
 }
 
-void keyReleased() {
+void keyPressed() {
   switch (keyCode) {
+    case DOWN: currShape.moveDown();
+               break;
     case LEFT: currShape.moveLeft();
                break;
     case RIGHT: currShape.moveRight();
@@ -145,15 +138,11 @@ void keyReleased() {
   }
 }
 
-void keyPressed() {
-  switch (keyCode) {
-    case DOWN: currShape.moveDown();
-               break;
-  }
-}
-
-void mouseClicked() {
+void mouseReleased() {
+  currShape.setPrevLayout();
+  currShape.resetShape();
   currShape.rotateLeft();
+  currShape.checkRotation();
 }
 
 int clearRows() {
@@ -198,35 +187,25 @@ int clearRows() {
 
 void spawnRandomShape() {
   int randLetter, randColor;
-  //char letter;
   
-  //randLetter = int(random(7));
+  randLetter = int(random(7));
   randColor = int(random(7));
-  
-  randLetter = int(random(2));
   
   if (randLetter == 0)
     currShape = new IShape(randColor + 2);
-  else
+  else if (randLetter == 1)
     currShape = new LShape(randColor + 2);
+  else if (randLetter == 2)
+    currShape = new OShape(randColor + 2);
+  else if (randLetter == 3)
+    currShape = new TShape(randColor + 2);
+  else if (randLetter == 4)
+    currShape = new SShape(randColor + 2);
+  else if (randLetter == 5)
+    currShape = new ZShape(randColor + 2);
+  else
+    currShape = new JShape(randColor + 2);
   
-  //if (randLetter == 0)
-  //  letter = 'L';
-  //else if (randLetter == 1)
-  //  letter = 'Z';
-  //else if (randLetter == 2)
-  //  letter = 'O';
-  //else if (randLetter == 3)
-  //  letter = 'T';
-  //else if (randLetter == 4)
-  //  letter = 'S';
-  //else if (randLetter == 5)
-  //  letter = 'J'; 
-  //else 
-  //  letter = 'I';
-  
-  
-  //currShape = new Shape(letter, randColor + 2);
   currShape.spawn();
 }
 
@@ -277,7 +256,6 @@ void showStartMenu() {
 }
 
 void endGame() {
-  println("Game over");
   fill(255);
   background(0);
   fill(255);
@@ -329,6 +307,4 @@ void endGame() {
     score = 0;
     gameOver = false;
   }
-  else 
-    println(mouseX + " " + mouseY);
 }

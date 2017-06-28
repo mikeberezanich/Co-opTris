@@ -1,13 +1,13 @@
-class LShape extends Shape {
+class JShape extends Shape {
     
-  public LShape(int c) {
+  public JShape(int c) {
     super(c);
     shapeLayout = new int[3][3];
     prevLayout = new int[3][3];
     shapeLayout[1][0] = shapeColor;
     shapeLayout[1][1] = shapeColor;
     shapeLayout[1][2] = shapeColor;
-    shapeLayout[2][2] = shapeColor;
+    shapeLayout[0][2] = shapeColor;
     state = 0;
     maxState = 3;
   }
@@ -17,10 +17,10 @@ class LShape extends Shape {
       shapeLayout[0][1] = shapeColor;
       shapeLayout[1][1] = shapeColor;
       shapeLayout[2][1] = shapeColor;
-      shapeLayout[2][0] = shapeColor;
+      shapeLayout[2][2] = shapeColor;
     }
     else if (state == 1) {
-      shapeLayout[0][0] = shapeColor;
+      shapeLayout[2][0] = shapeColor;
       shapeLayout[1][0] = shapeColor;
       shapeLayout[1][1] = shapeColor;
       shapeLayout[1][2] = shapeColor;
@@ -29,13 +29,13 @@ class LShape extends Shape {
       shapeLayout[0][1] = shapeColor;
       shapeLayout[1][1] = shapeColor;
       shapeLayout[2][1] = shapeColor;
-      shapeLayout[0][2] = shapeColor;
+      shapeLayout[0][0] = shapeColor;
     }
     else if (state == 3) {
       shapeLayout[1][0] = shapeColor;
       shapeLayout[1][1] = shapeColor;
       shapeLayout[1][2] = shapeColor;
-      shapeLayout[2][2] = shapeColor;
+      shapeLayout[0][2] = shapeColor;
     }
   }
 }
